@@ -14,3 +14,14 @@ Buatlah sebuah web dengan Framework! (Framework bebas)
 3. Admin menkonfirmasi permintaan akses video dengan skala waktu terbatas (contoh : customer a diberi akses video dengan waktu yang ditentukan admin)
 4. Customer melihat video sesuai tenggang waktu yang diberikan
 5. Saat waktu habis customer bisa meminta akses ulang ke admin
+
+<!--SETUP-->
+npm install
+
+<!--Postgres Docker-->
+Docker postgres image: postgres:16-alpine3.23
+``` shell
+docker run -d --name postgresql -p 5432:5432 -e POSTGRES_PASSWORD=postgres postgres:16-alpine3.23
+```
+
+create sesi_nonton_db
