@@ -1,0 +1,219 @@
+<%- include('../partials/header') %>
+
+<h3 class="mb-3">Dashboard Admin</h3>
+
+<% if (msg) { %>
+    <div class="alert alert-success alert-dismissible fade show">
+        <%= msg %>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+<% } %>
+<% if (err) { %>
+    <div class="alert alert-danger alert-dismissible fade show">
+        <%= err %>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+<% } %>
+
+<div class="row">
+    <!-- ==================== KOLOM KIRI: CRUD CUSTOMER ==================== -->
+    <div class="col-md-6 mb-4">
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Kelola Data Customer</h5>
+                <button class="btn btn-light btn-sm" data-bs-toggle="modal" data-bs-target="#addCustomerModal">
+                    + Tambah Customer
+                </button>
+            </div>
+            <div class="card-body">
+                <table class="table table-bordered table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Nama</th>
+                            <th>Username</th>
+                            <th width="140">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% if (customers.length === 0) { %>
+                            <tr><td colspan="3" class="text-center text-muted">Belum ada data customer</td></tr>
+                        <% } %>
+                        <% customers.forEach(c => { %>
+                            <tr>
+                                <td><%= c.name %></td>
+                                <td><code><%= c.username %></code></td>
+                                <td>
+                                    <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editCustomer<%= c.id %>">Edit</button>
+                                    <form action="/admin/customers/<%= c.id %>?_method=DELETE" method="POST" class="d-inline" onsubmit="return confirm('Hapus customer ini?')">
+                                        <button class="btn btn-danger btn-sm">Hapus</button>
+                                    </form>
+                                </td>
+                            </tr>
+
+                            <!-- Modal Edit Customer -->
+                            <div class="modal fade" id="editCustomer<%= c.id %>" tabindex="-1">
+                                <div class="modal-dialog">
+                                    <form action="/admin/customers/<%= c.id %>?_method=PUT" method="POST" class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Edit Customer</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="mb-3">
+                                                <label class="form-label">Nama Lengkap</label>
+                                                <input type="text" name="name" class="form-control" value="<%= c.name %>" required>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label">Username</label>
+                                                <input type="text" name="username" class="form-control" value="<%= c.username %>" required>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label">Password Baru <small class="text-muted">(Kosongkan jika tidak diubah)</small></label>
+                                                <input type="password" name="password" class="form-control">
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== KOLOM KANAN: CRUD VIDEO ==================== -->
+    <div class="col-md-6 mb-4">
+        <div class="card shadow-sm">
+            <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Kelola Data Video</h5>
+                <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#addVideoModal">
+                    + Upload Video
+                </button>
+            </div>
+            <div class="card-body">
+                <table class="table table-bordered table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Judul</th>
+                            <th>File</th>
+                            <th width="140">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% if (videos.length === 0) { %>
+                            <tr><td colspan="3" class="text-center text-muted">Belum ada video diunggah</td></tr>
+                        <% } %>
+                        <% videos.forEach(v => { %>
+                            <tr>
+                                <td>
+                                    <strong><%= v.title %></strong><br>
+                                    <small class="text-muted"><%= v.description %></small>
+                                </td>
+                                <td><small><code><%= v.file_path %></code></small></td>
+                                <td>
+                                    <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editVideo<%= v.id %>">Edit</button>
+                                    <form action="/admin/videos/<%= v.id %>?_method=DELETE" method="POST" class="d-inline" onsubmit="return confirm('Hapus video ini beserta filenya?')">
+                                        <button class="btn btn-danger btn-sm">Hapus</button>
+                                    </form>
+                                </td>
+                            </tr>
+
+                            <!-- Modal Edit Video -->
+                            <div class="modal fade" id="editVideo<%= v.id %>" tabindex="-1">
+                                <div class="modal-dialog">
+                                    <form action="/admin/videos/<%= v.id %>?_method=PUT" method="POST" enctype="multipart/form-data" class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Edit Video</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="mb-3">
+                                                <label class="form-label">Judul Video</label>
+                                                <input type="text" name="title" class="form-control" value="<%= v.title %>" required>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label">Deskripsi</label>
+                                                <textarea name="description" class="form-control" rows="2"><%= v.description %></textarea>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label">Ganti File Video <small class="text-muted">(Opsional)</small></label>
+                                                <input type="file" name="videoFile" class="form-control" accept="video/*">
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Tambah Customer -->
+<div class="modal fade" id="addCustomerModal" tabindex="-1">
+    <div class="modal-dialog">
+        <form action="/admin/customers" method="POST" class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Tambah Customer Baru</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label class="form-label">Nama Lengkap</label>
+                    <input type="text" name="name" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Username</label>
+                    <input type="text" name="username" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Password</label>
+                    <input type="password" name="password" class="form-control" required>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary">Simpan</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Modal Upload Video -->
+<div class="modal fade" id="addVideoModal" tabindex="-1">
+    <div class="modal-dialog">
+        <form action="/admin/videos" method="POST" enctype="multipart/form-data" class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Upload Video Baru</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label class="form-label">Judul Video</label>
+                    <input type="text" name="title" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Deskripsi</label>
+                    <textarea name="description" class="form-control" rows="2"></textarea>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Pilih File Video (.mp4 / .webm)</label>
+                    <input type="file" name="videoFile" class="form-control" accept="video/*" required>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-success">Upload & Simpan</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<%- include('../partials/footer') %>

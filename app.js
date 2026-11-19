@@ -5,6 +5,11 @@ const path = require('path');
 require('dotenv').config();
 const db = require('./config/db');
 
+const authRoutes = require('./routes/authRoutes');
+const adminRoutes = require('./routes/adminRoutes');
+const { isAuthenticated, isAdmin, isCustomer } = require('./middlewares/auth');
+
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -31,15 +36,33 @@ app.use((req, res, next) => {
   next();
 });
 
-// Route Tes Koneksi Database
-app.get('/health', async (req, res) => {
-  try {
-    const result = await db.query('SELECT NOW() AS current_time, COUNT(*) AS total_users FROM users');
-    res.json({ status: 'OK', db: result.rows[0] });
-  } catch (err) {
-    res.status(500).json({ status: 'ERROR', message: err.message });
-  }
+// Auth route
+app.use('/', authRoutes);
+app.use('/admin', adminRoutes);
+
+app.get('/', (req, res) => {
+  if (!req.session.user) return res.redirect('/login');
+  res.redirect(req.session.user.role === 'admin' ? '/admin' : '/customer');
 });
+
+// Rute Sementara untuk Tes Proteksi Role (Akan diganti di Tahap 3 & 4)
+app.get('/admin', isAuthenticated, isAdmin, (req, res) => {
+    res.send(`<h3>Berhasil masuk Dashboard Admin (${req.session.user.name})</h3><form action="/logout" method="POST"><button>Logout</button></form>`);
+});
+
+app.get('/customer', isAuthenticated, isCustomer, (req, res) => {
+    res.send(`<h3>Berhasil masuk Halaman Customer (${req.session.user.name})</h3><form action="/logout" method="POST"><button>Logout</button></form>`);
+});
+
+// Route Tes Koneksi Database
+// app.get('/health', async (req, res) => {
+//   try {
+//     const result = await db.query('SELECT NOW() AS current_time, COUNT(*) AS total_users FROM users');
+//     res.json({ status: 'OK', db: result.rows[0] });
+//   } catch (err) {
+//     res.status(500).json({ status: 'ERROR', message: err.message });
+//   }
+// });
 
 app.listen(PORT, () => {
   console.log(`Server run in http://localhost:${PORT}`);
