@@ -9,7 +9,8 @@ const pool = new Pool({
   database: process.env.DB_NAME
 });
 
-pool.on('connect', () => {
+pool.on('connect', (client) => {
+    client.query("SET TIME ZONE 'Asia/Jakarta'") // Setiap koneksi ke db menggunakan timezone jakarta
   console.log('Terhubung ke Postgres');
 });
 

@@ -235,7 +235,7 @@ router.post("/requests/:id/approve", async (req, res) => {
 });
 
 // Reject request
-router.post("/request/:id/reject", async (req, res) => {
+router.post("/requests/:id/reject", async (req, res) => {
     const { id } = req.params;
     try {
         await db.query(

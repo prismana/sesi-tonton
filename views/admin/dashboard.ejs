@@ -49,35 +49,6 @@
                                     </form>
                                 </td>
                             </tr>
-
-                            <!-- Modal Edit Customer -->
-                            <div class="modal fade" id="editCustomer<%= c.id %>" tabindex="-1">
-                                <div class="modal-dialog">
-                                    <form action="/admin/customers/<%= c.id %>?_method=PUT" method="POST" class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title">Edit Customer</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <div class="mb-3">
-                                                <label class="form-label">Nama Lengkap</label>
-                                                <input type="text" name="name" class="form-control" value="<%= c.name %>" required>
-                                            </div>
-                                            <div class="mb-3">
-                                                <label class="form-label">Username</label>
-                                                <input type="text" name="username" class="form-control" value="<%= c.username %>" required>
-                                            </div>
-                                            <div class="mb-3">
-                                                <label class="form-label">Password Baru <small class="text-muted">(Kosongkan jika tidak diubah)</small></label>
-                                                <input type="password" name="password" class="form-control">
-                                            </div>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
                         <% }) %>
                     </tbody>
                 </table>
@@ -121,35 +92,6 @@
                                     </form>
                                 </td>
                             </tr>
-
-                            <!-- Modal Edit Video -->
-                            <div class="modal fade" id="editVideo<%= v.id %>" tabindex="-1">
-                                <div class="modal-dialog">
-                                    <form action="/admin/videos/<%= v.id %>?_method=PUT" method="POST" enctype="multipart/form-data" class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title">Edit Video</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <div class="mb-3">
-                                                <label class="form-label">Judul Video</label>
-                                                <input type="text" name="title" class="form-control" value="<%= v.title %>" required>
-                                            </div>
-                                            <div class="mb-3">
-                                                <label class="form-label">Deskripsi</label>
-                                                <textarea name="description" class="form-control" rows="2"><%= v.description %></textarea>
-                                            </div>
-                                            <div class="mb-3">
-                                                <label class="form-label">Ganti File Video <small class="text-muted">(Opsional)</small></label>
-                                                <input type="file" name="videoFile" class="form-control" accept="video/*">
-                                            </div>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
                         <% }) %>
                     </tbody>
                 </table>
@@ -232,6 +174,68 @@
         </div>
     </div>
 </div>
+
+<!-- Modal Edit Customer -->
+<% customers.forEach(c => { %>
+    <div class="modal fade" id="editCustomer<%= c.id %>" tabindex="-1">
+        <div class="modal-dialog">
+            <form action="/admin/customers/<%= c.id %>?_method=PUT" method="POST" class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Customer</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Nama Lengkap</label>
+                        <input type="text" name="name" class="form-control" value="<%= c.name %>" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Username</label>
+                        <input type="text" name="username" class="form-control" value="<%= c.username %>" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Password Baru <small class="text-muted">(Kosongkan jika tidak diubah)</small></label>
+                        <input type="password" name="password" class="form-control">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+<% }) %>
+
+<!-- Modal Edit Video -->
+<% videos.forEach(v => { %>
+    <div class="modal fade" id="editVideo<%= v.id %>" tabindex="-1">
+        <div class="modal-dialog">
+            <form action="/admin/videos/<%= v.id %>?_method=PUT" method="POST" enctype="multipart/form-data" class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Video</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Judul Video</label>
+                        <input type="text" name="title" class="form-control" value="<%= v.title %>" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Deskripsi</label>
+                        <textarea name="description" class="form-control" rows="2"><%= v.description %></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Ganti File Video <small class="text-muted">(Opsional)</small></label>
+                        <input type="file" name="videoFile" class="form-control" accept="video/*">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+<% }) %>
 
 <!-- Modal Tambah Customer -->
 <div class="modal fade" id="addCustomerModal" tabindex="-1">
