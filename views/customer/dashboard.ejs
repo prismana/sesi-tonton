@@ -1,0 +1,71 @@
+<%- include('../partials/header') %>
+
+<h3 class="mb-3">Katalog Video</h3>
+
+<% if (msg) { %>
+    <div class="alert alert-success alert-dismissible fade show">
+        <%= msg %>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+<% } %>
+<% if (err) { %>
+    <div class="alert alert-danger alert-dismissible fade show">
+        <%= err %>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+<% } %>
+
+<div class="row">
+    <% if (videos.length === 0) { %>
+        <div class="col-12">
+            <div class="alert alert-info">Belum ada video yang tersedia saat ini.</div>
+        </div>
+    <% } %>
+
+    <% videos.forEach(v => { %>
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title"><%= v.title %></h5>
+                    <p class="card-text text-muted flex-grow-1"><%= v.description || 'Tidak ada deskripsi.' %></p>
+
+                    <div class="mt-3 pt-3 border-top">
+                        <% if (v.is_active) { %>
+                            <div class="mb-2">
+                                <span class="badge bg-success">Akses Aktif</span><br>
+                                <small class="text-muted">Berlaku s/d: <strong><%= new Date(v.expires_at).toLocaleString('id-ID') %></strong></small>
+                            </div>
+                            <a href="/customer/videos/<%= v.id %>/watch" class="btn btn-primary w-100">
+                                ▶ Tonton Video
+                            </a>
+
+                        <% } else if (v.request_status === 'pending') { %>
+                            <div class="mb-2">
+                                <span class="badge bg-warning text-dark">Menunggu Persetujuan Admin</span>
+                            </div>
+                            <button class="btn btn-secondary w-100" disabled>Menunggu Konfirmasi...</button>
+
+                        <% } else if (v.request_status === 'approved' || v.request_status === 'expired') { %>
+                            <div class="mb-2">
+                                <span class="badge bg-danger">Waktu Akses Habis</span>
+                            </div>
+                            <form action="/customer/videos/<%= v.id %>/request" method="POST">
+                                <button type="submit" class="btn btn-outline-primary w-100">🔄 Minta Akses Ulang</button>
+                            </form>
+
+                        <% } else { %>
+                            <div class="mb-2">
+                                <span class="badge bg-light text-dark border">Belum Memiliki Akses</span>
+                            </div>
+                            <form action="/customer/videos/<%= v.id %>/request" method="POST">
+                                <button type="submit" class="btn btn-success w-100">🔒 Minta Akses Tonton</button>
+                            </form>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <% }) %>
+</div>
+
+<%- include('../partials/footer') %>

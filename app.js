@@ -7,6 +7,7 @@ const db = require('./config/db');
 
 const authRoutes = require('./routes/authRoutes');
 const adminRoutes = require('./routes/adminRoutes');
+const customerRoutes = require('./routes/customerRoutes');
 const { isAuthenticated, isAdmin, isCustomer } = require('./middlewares/auth');
 
 
@@ -39,6 +40,7 @@ app.use((req, res, next) => {
 // Auth route
 app.use('/', authRoutes);
 app.use('/admin', adminRoutes);
+app.use('/customer', customerRoutes);
 
 app.get('/', (req, res) => {
   if (!req.session.user) return res.redirect('/login');

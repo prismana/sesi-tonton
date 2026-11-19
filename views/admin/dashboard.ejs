@@ -158,6 +158,81 @@
     </div>
 </div>
 
+<!-- ==================== BAGIAN BAWAH: PERMINTAAN AKSES VIDEO ==================== -->
+<div class="card shadow-sm mb-4">
+    <div class="card-header bg-warning text-dark">
+        <h5 class="mb-0">Daftar Permintaan Akses Video dari Customer</h5>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>Customer</th>
+                        <th>Video</th>
+                        <th>Waktu Request</th>
+                        <th>Status</th>
+                        <th>Batas Waktu (Expires At)</th>
+                        <th width="320">Konfirmasi Admin</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% if (requests.length === 0) { %>
+                        <tr><td colspan="6" class="text-center text-muted">Belum ada permintaan akses video</td></tr>
+                    <% } %>
+                    <% requests.forEach(r => { 
+                        const isExpired = r.status === 'approved' && r.expires_at && new Date(r.expires_at) <= new Date();
+                    %>
+                        <tr>
+                            <td>
+                                <strong><%= r.customer_name %></strong><br>
+                                <small class="text-muted">@<%= r.username %></small>
+                            </td>
+                            <td><%= r.video_title %></td>
+                            <td><small><%= new Date(r.requested_at).toLocaleString('id-ID') %></small></td>
+                            <td>
+                                <% if (r.status === 'pending') { %>
+                                    <span class="badge bg-warning text-dark">Pending</span>
+                                <% } else if (r.status === 'approved' && !isExpired) { %>
+                                    <span class="badge bg-success">Aktif</span>
+                                <% } else if (isExpired || r.status === 'expired') { %>
+                                    <span class="badge bg-secondary">Kedaluwarsa</span>
+                                <% } else { %>
+                                    <span class="badge bg-danger">Ditolak</span>
+                                <% } %>
+                            </td>
+                            <td>
+                                <% if (r.expires_at) { %>
+                                    <small><%= new Date(r.expires_at).toLocaleString('id-ID') %></small>
+                                <% } else { %>
+                                    <span class="text-muted">-</span>
+                                <% } %>
+                            </td>
+                            <td>
+                                <% if (r.status === 'pending') { %>
+                                    <form action="/admin/requests/<%= r.id %>/approve" method="POST" class="d-flex gap-1">
+                                        <input type="number" name="duration" class="form-control form-control-sm" placeholder="Durasi" min="1" value="5" style="width: 75px;" required>
+                                        <select name="unit" class="form-select form-select-sm" style="width: 95px;">
+                                            <option value="minutes">Menit</option>
+                                            <option value="hours">Jam</option>
+                                        </select>
+                                        <button type="submit" class="btn btn-success btn-sm">Setujui</button>
+                                    </form>
+                                    <form action="/admin/requests/<%= r.id %>/reject" method="POST" class="mt-1">
+                                        <button type="submit" class="btn btn-outline-danger btn-sm w-100">Tolak</button>
+                                    </form>
+                                <% } else { %>
+                                    <small class="text-muted">Sudah diproses</small>
+                                <% } %>
+                            </td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
 <!-- Modal Tambah Customer -->
 <div class="modal fade" id="addCustomerModal" tabindex="-1">
     <div class="modal-dialog">
