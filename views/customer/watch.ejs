@@ -1,0 +1,55 @@
+<%- include('../partials/header') %>
+
+<div class="mb-3">
+    <a href="/customer" class="btn btn-outline-secondary btn-sm">&larr; Kembali ke Katalog</a>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+        <h5 class="mb-0"><%= video.title %></h5>
+        <span class="badge bg-warning text-dark" id="countdownBadge">
+            Menghitung sisa waktu...
+        </span>
+    </div>
+    <div class="card-body bg-black p-0 text-center">
+        <video id="videoPlayer" class="w-100" style="max-height: 70vh;" controls autoplay controlsList="nodownload">
+            <source src="/customer/videos/<%= video.video_id %>/stream" type="video/mp4">
+            Browser Anda tidak mendukung pemutaran video HTML5.
+        </video>
+    </div>
+    <div class="card-footer">
+        <p class="mb-1"><strong>Deskripsi:</strong></p>
+        <p class="text-muted mb-0"><%= video.description || 'Tidak ada deskripsi.' %></p>
+    </div>
+</div>
+
+<script>
+    const expiresAt = new Date("<%= new Date(video.expires_at).toISOString() %>").getTime();
+    const badge = document.getElementById('countdownBadge');
+    const player = document.getElementById('videoPlayer');
+
+    const timer = setInterval(() => {
+        const now = new Date().getTime();
+        const distance = expiresAt - now;
+
+        if (distance <= 0) {
+            clearInterval(timer);
+            player.pause();
+            player.removeAttribute('src');
+            player.load();
+            badge.className = 'badge bg-danger';
+            badge.innerText = 'Waktu Habis!';
+            alert('Waktu menonton Anda telah berakhir. Silakan minta akses ulang ke Admin jika ingin menonton kembali.');
+            window.location.href = '/customer';
+            return;
+        }
+
+        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+        badge.innerText = `Sisa Waktu: ${hours}j ${minutes}m ${seconds}d`;
+    }, 1000);
+</script>
+
+<%- include('../partials/footer') %>
