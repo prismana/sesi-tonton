@@ -14,8 +14,16 @@ Aplikasi web **Fullstack Monolith** berbasis **Express.js**, **EJS**, dan **Post
   * Saat durasi habis, akses video otomatis tertutup dan customer dapat mengajukan permintaan ulang (*re-request*).
 * **Streaming Video Terproteksi:** File video disimpan di luar folder publik dan dialirkan melalui *endpoint* khusus dengan dukungan *HTTP Range Request* setelah memvalidasi masa berlaku izin.
 
-## Struktur Database
+## Pratinjau Aplikasi
+| Halaman | Tampilan | Deskripsi |
+| :--- | :---: | :--- |
+| **1. Dashboard Admin** | <img src="docs/screenshots/1.admin-dashboard.png" alt="Halaman Admin" width="420"> | Tampilan dashboard untuk admin, ada tabel customer dan bisa CRUD (Mengganti password, nama customer), CRUD video (mengganti detail video dan file video), dan tabel approval dari customer. |
+| **2. Dashboard Customer** | <img src="docs/screenshots/2.customer-dashboard.png" alt="Dashboard Admin CRUD" width="420"> | Tampilan dashboard customer, menampilkan daftar video yang telah diupload ke aplikasi oleh admin. Customer dapat meminta izin untuk menonton video dari daftar video. |
+| **3. Request Customer** | <img src="docs/screenshots/3.customer-request.png" alt="Approval Akses Video" width="420"> | Dashboard menampilkan status pending setelah menekan request, lalu tombol akses video baru bisa diakses. |
+| **4. Halaman Persetujuan Admin** | <img src="docs/screenshots/4.admin-approval.png" alt="Katalog Video Customer" width="420"> | Daftar request masuk ke tabel daftar permintaan akses. Admin dapat menerima atau menolak permintaan akses customer. Admin menetapkan waktu akses dalam menit dan atau jam untuk setiap akses. |
+| **5. Pemutar Video Terproteksi** | <img src="docs/screenshots/5.customer-video-watch.png" alt="Pemutar Video" width="420"> | Halaman pemutaran video dengan *streaming* terproteksi dan penghitung mundur (*countdown timer*). Ketika waktu habis, pemutaran otomatis berhenti dan akses ditutup kembali. |  
 
+## Struktur Database
 Skema database berada pada file `database.sql` (dan skrip awal `init.sql`) dengan 4 tabel berelasi:
 1. `users` — Menyimpan data akun `admin` dan `customer`.
 2. `videos` — Menyimpan metadata video dan *path* file hasil unggahan.
